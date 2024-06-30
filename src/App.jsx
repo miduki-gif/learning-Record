@@ -1,25 +1,15 @@
 import { useState } from "react";
-import { useEffect } from "react";
 import { ListDisplay } from "./components/ ListDisplay";
 import { InputForm } from "./components/InputForm";
 import { Insert } from "./components/Insert";
 
 export const App = () =>{
 
-const [inputs, setInputs] = useState({ content: "", time:""});
-const [initialRender, setInitialRender] = useState(true);
+const [inputs, setInputs] = useState({ content: "", time:0});
 
 const [records, setReCords] = useState([]);
  const [error, setError] = useState("");
 
-const initialSettingTime = "Nan";
-
-useEffect(() =>{
-  if(initialRender){
-    setInputs((prevInputs =>({...prevInputs, time:initialSettingTime})))
-    setInitialRender(false);
-  }
-})
 const handleChange = (e) => {
   const {name, value } = e.target;
   if (name === 'time' && !/^[0-9]*$/.test(value)) {
@@ -31,18 +21,34 @@ const handleChange = (e) => {
 }));
 }
 
-const handleRegister = () =>{
-  if(!inputs.content && !inputs.time){
-    setError("入力されていない項目があります。");
+  const handleRegister = () =>{
+    console.log(inputs);
+    if(!inputs.content ||!inputs.time){
+      setError("入力されていない項目があります。");
+      console.log("入力されていない項目があります。");
+    }
+    else{
+      setReCords(prevsetReCords =>[
+        ...prevsetReCords,
+        {title: inputs.content, time: `${inputs.time}時間`}
+    ]);
+    setInputs({content:"", time:0});
   }
-  else{
-    setReCords(prevsetReCords =>[
-      ...prevsetReCords,
-      {title: inputs.content, time: `${inputs.time}時間`}
-  ]);
-  setInputs({content:"", time:0});
-}
-};
+  };
+  
+//   console.log(inputs);
+//   if(!inputs.content ||!inputs.time){
+//     setError("入力されていない項目があります。");
+//     console.log("入力されていない項目があります。");
+//   }
+//   else{
+//     setReCords(prevsetReCords =>[
+//       ...prevsetReCords,
+//       {title: inputs.content, time: `${inputs.time}時間`}
+//   ]);
+//   setInputs({content:"", time:0});
+// }
+// };
   return (
     <>
     <h1>学習記録一覧</h1>
@@ -51,7 +57,8 @@ const handleRegister = () =>{
     <p>入力されている学習内容: {inputs.content}</p>
     <p>入力されている時間: {inputs.time}時間</p>
     <Insert onClick={handleRegister}/>
-    <ListDisplay recordList={records} />
+    <div>{error}</div>
+    <ListDisplay recordList={records}/>
     </>
   );
 }
