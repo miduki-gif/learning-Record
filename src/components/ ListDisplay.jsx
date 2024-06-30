@@ -1,12 +1,11 @@
 export const ListDisplay = (props)=>{
     const {recordList} =props;
-    {console.log(recordList)};
     return(
         <ul style={{listStyle:"none"}}>
-        {recordList.map((studyList)=>
+        {recordList.map((record, time)=>
         (
-           <li key={studyList.time}>
-            <p>{studyList.title}{studyList.time}時間</p>
+           <li key={time}>
+            <p>{record.title}{record.time}</p>
            </li>
         )
        )}

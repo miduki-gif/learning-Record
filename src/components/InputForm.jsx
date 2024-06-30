@@ -1,10 +1,10 @@
 export const InputForm = (props) =>{
-    const [studyContentForm, studyTimeForm]=props;
-    {console.log(studyContentForm)}
+    const {name,value, onChange, label,suffix,pattern}=props;
     return(
         <>
-        <input value={studyContentForm}/>
-        <input value={studyTimeForm}/>
+        <label>{label}</label>
+        <input name={name} value={value} onChange={onChange} pattern={pattern}/>
+        <span>{suffix}</span>
         </>
     );
 }

@@ -1,19 +1,56 @@
 import { useState } from "react";
+import { useEffect } from "react";
 import { ListDisplay } from "./components/ ListDisplay";
 import { InputForm } from "./components/InputForm";
+import { Insert } from "./components/Insert";
 
 export const App = () =>{
-const records = [
-  { title: "勉強の記録1", time: 1},
-  { title: "勉強の記録2", time: 3},
-  { title: "勉強の記録3", time: 5}
-];
-const [studyContent, setStudyContent] = useState("");
-const [studyTime, setStudyTime] = useState("");
+
+const [inputs, setInputs] = useState({ content: "", time:""});
+const [initialRender, setInitialRender] = useState(true);
+
+const [records, setReCords] = useState([]);
+ const [error, setError] = useState("");
+
+const initialSettingTime = "Nan";
+
+useEffect(() =>{
+  if(initialRender){
+    setInputs((prevInputs =>({...prevInputs, time:initialSettingTime})))
+    setInitialRender(false);
+  }
+})
+const handleChange = (e) => {
+  const {name, value } = e.target;
+  if (name === 'time' && !/^[0-9]*$/.test(value)) {
+    return;
+}
+  setInputs(prevInputs =>({
+    ...prevInputs,
+    [name]:value
+}));
+}
+
+const handleRegister = () =>{
+  if(!inputs.content && !inputs.time){
+    setError("入力されていない項目があります。");
+  }
+  else{
+    setReCords(prevsetReCords =>[
+      ...prevsetReCords,
+      {title: inputs.content, time: `${inputs.time}時間`}
+  ]);
+  setInputs({content:"", time:0});
+}
+};
   return (
     <>
     <h1>学習記録一覧</h1>
-    <InputForm studyContentForm={studyContent} studyTimeForm={studyTime}/>
+    <InputForm name="content" value={inputs.content} onChange={handleChange} label="学習内容"/>
+    <InputForm name="time" value={inputs.time === initialSettingTime ? "" : inputs.time} onChange={handleChange} label="学習時間" suffix="時間" pattern="^[0-9]*$"/>
+    <p>入力されている学習内容: {inputs.content}</p>
+    <p>入力されている時間: {inputs.time}時間</p>
+    <Insert onClick={handleRegister}/>
     <ListDisplay recordList={records} />
     </>
   );
